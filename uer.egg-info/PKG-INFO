@@ -1,0 +1,303 @@
+Metadata-Version: 2.4
+Name: uer
+Version: 0.1.0
+Summary: Universal Embedding Representation - Open Source Standard
+Home-page: https://github.com/yourorg/universal-embedding-ir
+Author: UER Contributors
+Author-email: uer@domain.com
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: pyyaml>=5.1
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: test
+Requires-Dist: pytest>=6.0; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Universal Embedding Representation (UER)
+
+The Universal Embedding Representation (UER) is an open-source standard for vendor-neutral, model-agnostic intermediate representation of text embeddings. It serves as a universal format that any embedding model can map into, similar to how SQL standardizes relational queries or ONNX standardizes neural network formats.
+
+## Core Objectives
+
+1. **Universal Format**: Define a standardized intermediate representation (IR) that all embedding models can transform into, enabling seamless interoperability across different vendors (OpenAI, Cohere, BGE, Mistral, etc.).
+
+2. **Compiler Layer**: Provide transformation logic to convert embeddings from any source model into the standardized UER format using alignment techniques such as linear projection, learned mappings, and normalization.
+
+3. **Validation Framework**: Implement rigorous validation rules to ensure all embeddings conform to the UER specification.
+
+4. **Future DSL Foundation**: Lay groundwork for a domain-specific language (DSL) that can query vector databases (Milvus, Qdrant, Weaviate, pgvector, Pinecone) using the UER IR as the intermediate layer.
+
+### How UER Works
+
+The UER compiler transforms raw embeddings through several stages:
+
+```mermaid
+graph TD
+    A[Raw Embedding from Any Model] --> B[UER Compiler]
+    B --> C[Alignment/Projection Layer]
+    C --> D[IR Normalization]
+    D --> E[UER-Compliant Vector]
+    E --> F[Validation]
+    F --> G[Universal Vector Database Query]
+```
+
+## Key Benefits
+
+- **Interoperability**: Embeddings from different models can be transformed into a common format
+- **Standardization**: Consistent representation removes vendor lock-in and model-specific quirks
+- **Extensibility**: New models and backends can easily integrate through the IR
+- **Reliability**: Built-in validation ensures embedding quality and consistency
+- **Future-Ready**: Foundation for advanced query operations across vector database ecosystems
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourorg/universal-embedding-ir.git
+cd universal-embedding-ir
+
+# Install in development mode
+pip install -e .
+```
+
+## Quick Start
+
+```python
+import numpy as np
+from uer import load_uer_spec, compile_to_uer
+
+# Load UER specification
+spec = load_uer_spec('specs/uer_v0.1.yaml')
+
+# Compile raw embedding to UER format (example: from OpenAI)
+raw_embedding = np.random.randn(1536)  # ada-002 dimension
+uer_embedding = compile_to_uer(raw_embedding, spec)
+
+print(f"UER embedding shape: {uer_embedding.shape}")
+print(f"UER embedding dtype: {uer_embedding.dtype}")
+print(f"Norm: {np.linalg.norm(uer_embedding):.6f}")  # Should be ~1.0
+```
+
+## UER Specification Format
+
+The UER specification defines all requirements for embeddings:
+
+```yaml
+uer_version: "0.1.0"
+vector_dimension: 768
+normalization_rules:
+  method: "l2"
+  epsilon: 1e-12
+metric: "cosine"
+dtype: "float32"
+geometry: "spherical"
+
+# Semantic space metadata
+semantic_space:
+  domain: "general"
+  language: ["en", "multilingual"]
+
+# Model metadata
+model_metadata:
+  pooling: "cls"
+  tokenizer: "wordpiece"
+
+# Validation rules
+validation_rules:
+  dimension_tolerance: 0.0
+  norm_tolerance: 1e-6
+  dtype_strict: true
+```
+
+## API Reference
+
+### Core Classes
+
+#### `UERSpecLoader`
+Loads and validates UER specification files.
+
+```python
+from uer.loader import UERSpecLoader
+
+loader = UERSpecLoader()
+spec = loader.load_spec('specs/uer_v0.1.yaml')
+```
+
+#### `UERValidator`
+Validates embeddings against UER specification.
+
+```python
+from uer.validator import UERValidator
+
+validator = UERValidator(spec)
+is_valid = validator.validate_embedding(embedding)
+```
+
+#### `UERCompiler`
+Compiles raw embeddings into UER-compliant vectors.
+
+```python
+from uer.compiler import UERCompiler
+
+compiler = UERCompiler(spec)
+uer_embedding = compiler.compile(raw_embedding)
+```
+
+### Convenience Functions
+
+```python
+from uer import load_uer_spec, compile_to_uer, validate_uer_embedding
+
+# Load spec
+spec = load_uer_spec('specs/uer_v0.1.yaml')
+
+# Compile embedding
+uer_vector = compile_to_uer(raw_embedding, spec)
+
+# Validate
+is_valid = validate_uer_embedding(uer_vector, spec)
+```
+
+## Project Structure
+
+```
+universal-embedding-ir/
+├── specs/             # UER specification files
+├── uer/              # Core UER modules
+│   ├── __init__.py
+│   ├── loader.py     # Spec loading & validation
+│   ├── validator.py  # Embedding validation
+│   ├── compiler.py   # Compilation pipeline
+│   └── ops/
+│       └── align.py  # Alignment operations
+├── examples/         # Usage examples
+├── tests/           # Unit tests
+└── README.md
+```
+
+## Running Examples
+
+```bash
+# Run the transformation example
+python examples/transform_example.py
+```
+
+## Running Tests
+
+```bash
+# Install test dependencies
+pip install pytest
+
+# Run all tests
+pytest tests/
+
+# Run specific test
+pytest tests/test_validation.py -v
+```
+
+## Technical Overview
+
+### Supported Features (v0.1)
+
+- **Vector Dimensions**: Configurable (default: 768)
+- **Data Types**: float32, float16, int8, uint8
+- **Normalization**: L2 normalization for spherical geometry
+- **Metrics**: Cosine similarity, dot product, Euclidean distance
+- **Geometry**: Spherical (normalized), Euclidean, future: Hyperbolic
+- **Validation**: Dimension, dtype, normalization, finite values checking
+
+### Alignment Strategies
+
+**Identity Mapping (v0.1)**
+- Preserves existing embedding dimensions
+- Zero-padding or truncation for dimension mismatches
+- Placeholder for future sophisticated alignment
+
+**Future Alignment Types**
+- Linear projection matrices
+- Learned transformation models
+- Multi-stage alignment pipelines
+
+### Validation Rules
+
+UER enforces strict validation by default:
+- Exact dimension matching
+- Correct data type
+- Proper normalization
+- No NaN/infinite values
+- Configurable tolerances
+
+## Development Roadmap
+
+### v0.1 (Current)
+- ✅ IR specification format
+- ✅ Validation module
+- ✅ Basic compiler skeleton
+- ✅ Identity alignment placeholder
+- ✅ Comprehensive test suite
+
+### v0.2 (Next)
+- Linear projection alignment
+- Multiple normalization methods
+- Extended dtype support (bf16, int4)
+- Performance optimizations
+- Streaming compilation for large batches
+
+### Future Releases
+- Learned alignment models (autoencoders, transformers)
+- Hyperbolic geometry support
+- UER DSL query language
+- Vector database integrations
+- Quantization-aware compilation
+- Hardware acceleration (GPU, TPU)
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+Key areas for contribution:
+- Additional alignment algorithms
+- Performance optimizations
+- New geometry types
+- Vector database integrations
+- Extended test coverage
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## Citation
+
+If you use UER in your research or applications, please cite:
+
+```bibtex
+@misc{universal_embedding_representation,
+  title={Universal Embedding Representation (UER): A Standard for Model-Agnostic Text Embeddings},
+  author={UER Contributors},
+  year={2024},
+  howpublished={\url{https://github.com/yourorg/universal-embedding-ir}},
+}

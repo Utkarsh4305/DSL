@@ -1,0 +1,36 @@
+uer_version: "0.1.0"
+vector_dimension: 768
+normalization_rules:
+  method: "l2"
+  epsilon: 1e-12
+metric: "cosine"
+dtype: "float32"
+geometry: "spherical"
+
+# Semantic space metadata
+semantic_space:
+  domain: "general"
+  language: ["en", "multilingual"]
+  corpus_size: "large_scale"
+  training_method: "contrastive"
+
+# Model metadata
+model_metadata:
+  pooling: "cls"
+  tokenizer: "wordpiece"
+  context_length: 512
+  vocabulary_size: 30522
+
+# Alignment metadata
+alignment_metadata:
+  mapping_type: "linear_projection"
+  mapping_file: null  # Will be populated when alignment models are trained
+  alignment_version: "0.1.0"
+
+# Validation rules
+validation_rules:
+  dimension_tolerance: 0.0  # Exact match for v0.1
+  norm_tolerance: 1e-6
+  dtype_strict: true
+  nan_check: true
+  inf_check: true

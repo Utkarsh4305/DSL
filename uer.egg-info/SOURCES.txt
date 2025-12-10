@@ -1,0 +1,13 @@
+README.md
+setup.py
+tests/test_validation.py
+uer/__init__.py
+uer/compiler.py
+uer/loader.py
+uer/validator.py
+uer.egg-info/PKG-INFO
+uer.egg-info/SOURCES.txt
+uer.egg-info/dependency_links.txt
+uer.egg-info/not-zip-safe
+uer.egg-info/requires.txt
+uer.egg-info/top_level.txt
