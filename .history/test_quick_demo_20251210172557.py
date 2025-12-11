@@ -57,7 +57,7 @@ print(".1f")
 # Test 5: Zero vector protection
 print("\nTesting zero vector protection...")
 try:
-    compiler = UERCompiler(uer_config)
+    compiler = UERCompiler(config)
     zero_result = compiler.compile(np.zeros((1, 768)))
     print(".3f")
 except Exception as e:

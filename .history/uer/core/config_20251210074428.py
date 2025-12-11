@@ -3,8 +3,6 @@ UER Configuration Management - Enterprise Grade
 
 Advanced configuration handling with schema evolution, versioning,
 and enterprise features for production UER deployments.
-
-Includes UERConfig class for backwards compatibility with v0.1 core compiler.
 """
 
 import json
@@ -14,7 +12,6 @@ from typing import Dict, Any, Optional, List, Tuple
 from pathlib import Path
 import hashlib
 from datetime import datetime
-import numpy as np
 
 from ..utils.errors import UERConfigurationError
 
@@ -493,86 +490,3 @@ def migrate_legacy_config(legacy_path: Path, output_path: Optional[Path] = None)
 
     logger.info(f"Migrated legacy config: {legacy_path} -> {output_path}")
     return output_path
-
-
-class UERConfig:
-    """
-    UER Configuration wrapper for backwards compatibility with v0.1 core compiler.
-
-    Provides a simple interface similar to the original v0.1 configuration,
-    while supporting the enhanced v0.2 specification internally.
-    """
-
-    def __init__(self, spec: Dict[str, Any]):
-        """
-        Initialize UER configuration.
-
-        Args:
-            spec: UER specification dictionary (can be v0.1 or v0.2)
-        """
-        self.spec = spec
-        self.vector_dim = spec.get('vector_dimension', 768)
-
-        # Auto-upgrade v0.1 specs to v0.2 internally if needed
-        if spec.get('uer_version', '0.1.0') == '0.1.0':
-            schema_manager = UERSchemaManager()
-            self.spec = schema_manager.evolve_specification(spec, '0.2.0')
-            logger.info("Automatically upgraded v0.1 spec to v0.2 internally")
-
-    def get_target_dtype(self) -> np.dtype:
-        """Get the target dtype for embeddings."""
-        dtype_str = self.spec.get('dtype', 'float32')
-        return np.dtype(dtype_str)
-
-    def get_spec(self) -> Dict[str, Any]:
-        """Get the full specification dictionary."""
-        return self.spec
-
-    def is_v2_spec(self) -> bool:
-        """Check if this is a v0.2 specification."""
-        return self.spec.get('uer_version', '0.1.0') == '0.2.0'
-
-    @property
-    def vector_dimension(self) -> int:
-        """Get vector dimension."""
-        return self.spec.get('vector_dimension', 768)
-
-    @property
-    def dtype(self) -> str:
-        """Get dtype string."""
-        return self.spec.get('dtype', 'float32')
-
-    @property
-    def metric(self) -> str:
-        """Get distance metric."""
-        return self.spec.get('metric', 'cosine')
-
-    @property
-    def normalization_rules(self) -> Dict[str, Any]:
-        """Get normalization rules."""
-        return self.spec.get('normalization_rules', {'method': 'l2', 'epsilon': 1e-12})
-
-    def get_validation_rules(self) -> Dict[str, Any]:
-        """Get enhanced validation rules (v0.2 features with defaults)."""
-        return self.spec.get('validation_rules', {
-            'dimension_tolerance': 0.0,
-            'norm_tolerance': 1e-6,
-            'dtype_strict': True,
-            'nan_check': True,
-            'inf_check': True,
-            'zero_vector_reject': True
-        })
-
-    def should_reject_zero_vectors(self) -> bool:
-        """Check if zero vector rejection is enabled."""
-        return self.get_validation_rules().get('zero_vector_reject', True)
-
-    @property
-    def dim_tolerance(self) -> float:
-        """Get dimension tolerance."""
-        return self.get_validation_rules().get('dimension_tolerance', 0.0)
-
-    @property
-    def norm_tolerance(self) -> float:
-        """Get normalization tolerance."""
-        return self.get_validation_rules().get('norm_tolerance', 1e-6)
