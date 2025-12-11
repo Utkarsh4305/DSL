@@ -267,7 +267,7 @@ class UERValidator:
 
         # Future: add geometry-specific rules for euclidean, etc.
 
-    def validate_batch(self, embeddings: np.ndarray, strict: bool = True):
+    def validate_batch(self, embeddings: np.ndarray, strict: bool = True) -> Union[bool, List[int]]:
         """
         Validate a batch of embeddings.
 
@@ -309,7 +309,7 @@ class UERValidator:
 
 def validate_uer_embedding(embedding: np.ndarray, spec: Dict[str, Any]) -> bool:
     """
-    Convenience function to validate a UER embedding with v0.2 enhanced checks.
+    Convenience function to validate a UER embedding.
 
     Args:
         embedding: Embedding to validate
@@ -319,27 +319,7 @@ def validate_uer_embedding(embedding: np.ndarray, spec: Dict[str, Any]) -> bool:
         True if valid
 
     Raises:
-        UERValidationError: If invalid
+        ValueError: If invalid
     """
     validator = UERValidator(spec)
     return validator.validate_embedding(embedding, strict=True)
-
-
-def validate_uer_embedding_batch(embeddings: np.ndarray, spec: Dict[str, Any],
-                                strict: bool = True):
-    """
-    Convenience function to validate a batch of UER embeddings.
-
-    Args:
-        embeddings: Batch of embeddings (2D array)
-        spec: UER specification
-        strict: If True, raises on invalid. If False, returns list of failed indices.
-
-    Returns:
-        True if all valid, or list of invalid indices (when strict=False)
-
-    Raises:
-        UERValidationError: If any invalid and strict=True
-    """
-    validator = UERValidator(spec)
-    return validator.validate_batch(embeddings, strict=strict)

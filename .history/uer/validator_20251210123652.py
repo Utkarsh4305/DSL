@@ -326,7 +326,7 @@ def validate_uer_embedding(embedding: np.ndarray, spec: Dict[str, Any]) -> bool:
 
 
 def validate_uer_embedding_batch(embeddings: np.ndarray, spec: Dict[str, Any],
-                                strict: bool = True):
+                                strict: bool = True) -> Union[bool, List[int]]:
     """
     Convenience function to validate a batch of UER embeddings.
 

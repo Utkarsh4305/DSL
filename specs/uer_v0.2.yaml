@@ -1,0 +1,77 @@
+uer_version: "0.2.0"
+vector_dimension: 768
+normalization_rules:
+  method: "l2"
+  epsilon: 1e-12
+metric: "cosine"
+dtype: "float32"
+geometry: "spherical"
+
+# Semantic space metadata
+semantic_space:
+  domain: "general"
+  language: ["en", "multilingual"]
+  corpus_size: "large_scale"
+  training_method: "contrastive"
+
+# Model metadata
+model_metadata:
+  pooling: "cls"
+  tokenizer: "wordpiece"
+  context_length: 512
+  vocabulary_size: 30522
+
+# Alignment metadata
+alignment_metadata:
+  mapping_type: "identity"
+  mapping_file: null
+  alignment_version: "0.2.0"
+  matrix_shape: null
+
+# Validation rules
+validation_rules:
+  dimension_tolerance: 0.0
+  norm_tolerance: 1e-6
+  dtype_strict: true
+  nan_check: true
+  inf_check: true
+  zero_vector_reject: true
+  dimension_min: 64
+  dimension_max: 4096
+  epsilon_min: 1e-15
+  epsilon_max: 1e-6
+
+# NEW: Version compatibility
+version_compatibility:
+  previous_versions: ["0.1.0"]
+  backwards_compatible: true
+  deprecated_features: []
+  migration_required: false
+
+# NEW: Numeric precision guarantees
+numeric_precision_guarantees:
+  fp_precision: "float32"
+  quantization_impact: "minimal"
+  numerical_stability: "guaranteed"
+  supported_precisions: ["float32", "float64"]
+
+# NEW: Embedding statistics
+embedding_statistics:
+  expected_distribution: "normal"
+  mean_norm: 1.0
+  norm_variance: "low"
+  dimension_scaling: "linear"
+
+# NEW: Robustness profiles
+robustness_profiles:
+  adversarial_resistance: "high"
+  corruption_tolerance: "medium"
+  numerical_stability: "guaranteed"
+  provider_variability: "handled"
+
+# Backwards compatibility notes for v0.1
+# - Adds required fields for strict validation
+# - Enforces numerical bounds and enum restrictions
+# - Zero-vector rejection enabled by default
+# - Enhanced error messages with recovery suggestions
+# - Batch processing groundwork added to compiler
