@@ -78,16 +78,7 @@ class UERSpecLoader:
 
     def _is_v02_spec(self, version: str) -> bool:
         """Check if spec version requires v0.2 validation."""
-        if not isinstance(version, str):
-            return False
-        try:
-            # Parse version like "0.2.0" -> (0, 2, 0)
-            parts = version.split('.')
-            major, minor = int(parts[0]), int(parts[1])
-            return major > 0 or (major == 0 and minor >= 2)
-        except (ValueError, IndexError):
-            # If version can't be parsed, assume v0.1
-            return False
+        return version.startswith('0.2') or version >= '0.2'
 
     def _validate_v01_spec(self, spec: Dict[str, Any]) -> None:
         """Backwards compatible validation for v0.1 specs."""

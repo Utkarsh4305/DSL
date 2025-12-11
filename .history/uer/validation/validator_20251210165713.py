@@ -304,7 +304,7 @@ class UERValidator:
         if norm_check_enabled and embedding.ndim <= 2:
             norms = np.linalg.norm(embedding, axis=-1)
             expected_norm = self.config.spec.get('normalization_rules', {}).get('expected_norm', 1.0)
-            norm_tolerance = float(self.config.norm_tolerance)
+            norm_tolerance = self.config.norm_tolerance
 
             norm_deviations = np.abs(norms - expected_norm)
             norm_passed = np.all(norm_deviations <= norm_tolerance)
@@ -385,7 +385,3 @@ def validate_uer_embedding_batch(embeddings: List[np.ndarray], spec: Dict[str, A
     report = validator.validate_batch(embeddings)
     # Return individual validation status (simplified version)
     return [True] * len(embeddings) if report.passed else [False] * len(embeddings)
-
-
-# Backward compatibility alias
-validate_batch_uer = validate_uer_embedding_batch

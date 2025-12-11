@@ -11,8 +11,12 @@ __description__ = "Universal Embedding Representation - Production Ready"
 from .core.compiler import UERCompiler, compile_to_uer, compile_batch_to_uer
 from .loader import load_uer_spec, UERSpecLoader
 from .core.config import UERConfig
-from .validation.validator import UERValidator, validate_uer_embedding
+from .validation.validator import UERValidator, validate_uer_embedding, validate_batch_uer
 from .providers.registry import ProviderRegistry, register_provider, get_provider_alignment
+
+# Legacy compatibility
+from .loader import load_uer_spec as legacy_load_uer_spec
+from .validator import validate_uer_embedding as legacy_validate_uer_embedding
 
 __all__ = [
     # Core compilation
@@ -23,12 +27,11 @@ __all__ = [
     # Configuration
     'load_uer_spec',
     'UERSpecLoader',
-    'UERConfig',
 
     # Validation
     'UERValidator',
     'validate_uer_embedding',
-    'validate_uer_embedding_batch',
+    'validate_batch_uer',
 
     # Provider registry
     'ProviderRegistry',

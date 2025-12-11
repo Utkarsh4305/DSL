@@ -566,13 +566,3 @@ class UERConfig:
     def should_reject_zero_vectors(self) -> bool:
         """Check if zero vector rejection is enabled."""
         return self.get_validation_rules().get('zero_vector_reject', True)
-
-    @property
-    def dim_tolerance(self) -> float:
-        """Get dimension tolerance."""
-        return self.get_validation_rules().get('dimension_tolerance', 0.0)
-
-    @property
-    def norm_tolerance(self) -> float:
-        """Get normalization tolerance."""
-        return self.get_validation_rules().get('norm_tolerance', 1e-6)

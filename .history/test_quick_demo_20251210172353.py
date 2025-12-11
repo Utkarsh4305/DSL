@@ -24,8 +24,7 @@ config = load_uer_spec('specs/uer_v0.1.yaml')
 batch = [np.random.randn(384) for _ in range(50)]
 
 print("Testing batch compilation...")
-uer_config = UERConfig(config)
-results = compile_batch_to_uer(batch, uer_config)
+results = compile_batch_to_uer(batch, config)
 print(f"✅ Compiled {len(results)} embeddings successfully")
 
 # Test 2: Procrustes alignment
@@ -57,7 +56,7 @@ print(".1f")
 # Test 5: Zero vector protection
 print("\nTesting zero vector protection...")
 try:
-    compiler = UERCompiler(uer_config)
+    compiler = UERCompiler(config)
     zero_result = compiler.compile(np.zeros((1, 768)))
     print(".3f")
 except Exception as e:
